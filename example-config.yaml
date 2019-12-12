@@ -1,0 +1,29 @@
+---
+bigquery:
+  project_id: bq-project-id
+  dataset_id: bq-dataset-id
+  table_id: bq-table-id
+  schema_file: gs://bucket/path/to/schema/as/json/schema_file.json
+  merge: # Assume t to be the merge table and s to be the staging table
+    condition: t.id = s.id
+    matched: UPDATE SET title = s.title, year = s.year
+    notmatched: INSERT (id, title, year) VALUES(id, title, year)
+dataflow:
+  template: gs://dataflow-templates/latest/Jdbc_to_BigQuery
+  job_name_prefix: jdbc2bq
+  options:
+    project: dataflow-project-id
+    stagingLocation: gs://staging-bucket-here
+    tempLocation: gs://temp-bucket-here
+    region: asia-east1
+    network: vpc-name-here
+    subnetwork: regions/asia-east1/subnetworks/asia-east1
+  parameters:
+      driverJars: gs://datalake-demo-232617/mysql-drivers/mysql-connector-java-5.1.48.jar
+      driverClassName: com.mysql.jdbc.Driver
+      connectionURL: jdbc:mysql://my-database-ip:3306/my-database-name
+      connectionProperties: useSSL=false
+      query: select id, title, year from papers where year > 2016
+      bigQueryLoadingTemporaryDirectory: gs://bucket-temp-for-bq-load
+      username: my-db-user
+      password: my-db-password # Note you can also pass this as encrypted key. If you specify, then you also need to provide KMSEncryptionKey parameter!

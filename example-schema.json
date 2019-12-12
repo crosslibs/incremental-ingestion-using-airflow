@@ -1,0 +1,3 @@
+[{"name": "id", "type": "INTEGER", "mode": "NULLABLE"},
+ {"name": "title", "type": "STRING", "mode": "NULLABLE"},
+ {"name": "year", "type": "INTEGER", "mode": "NULLABLE"}]
